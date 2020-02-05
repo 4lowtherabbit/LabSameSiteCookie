@@ -1,0 +1,1 @@
+# A set of labs for understanding and testing the SameSite Cookie behaivor.

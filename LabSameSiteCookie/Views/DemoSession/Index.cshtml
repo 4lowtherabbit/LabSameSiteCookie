@@ -1,0 +1,23 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h4>A session cookie named ASP.NET_SessionId is set, before or when you open this page</h4>
+<h4>Use F12 to observer if the SameSite=Lax attributes is used to set the session cookie</h4>
+<hr />
+<h4>App Service platform version 86.0.7.148 (or later) uses SameSite=Lax for the session cookie by default</h4>
+<h4>The following configuration alters the default value to None, to both FormAuth and Session cookies.</h4>
+<pre>
+&lt;configuration&gt; 
+&lt;appSettings&gt;
+    &lt;add key="aspnet:SuppressSameSiteNone" value="true" /&gt;
+&lt;/appSettings&gt;
+&lt;system.web&gt; 
+  &lt;authentication&gt; 
+   &lt;forms cookieSameSite="None" /&gt; 
+  &lt;/authentication&gt; 
+  &lt;sessionState cookieSameSite="None" /&gt; 
+&lt;/system.web&gt; 
+&lt;/configuration&gt;
+</pre>

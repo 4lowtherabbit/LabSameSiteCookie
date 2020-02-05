@@ -1,0 +1,124 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h2>The App Service compatibility behavior</h2>
+<h4>Choose a SameSite attributes value and add a cookie.</h4>
+
+@using (Html.BeginForm())
+{
+<div class="form-group">
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="SameSiteValue" value="Do not set it">
+        <label class="form-check-label">Do not set it</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="SameSiteValue" value="Lax" checked>
+        <label class="form-check-label">Lax</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="SameSiteValue" value="Strict">
+        <label class="form-check-label">Strict</label>
+    </div>
+    <div class="form-check">
+        <input class="form-check-input" type="radio" name="SameSiteValue" value="None">
+        <label class="form-check-label">None</label>
+    </div>
+
+    <input type="submit" value="Add cookie" class="btn btn-default" />
+</div>
+}
+
+<h4>
+    Please open F12 and observe how a cookie will be added in the server response, after clicking the button.
+</h4>
+<br/>
+<br/>
+<hr/>
+<h4>Refer: <a href="https://azure.microsoft.com/en-in/updates/app-service-samesite-cookie-update/">Details on Azure App Service compatibility behavior</a></h4>
+
+<h4>This compatibily behavior is triggered when the following function returns true</h4>
+<pre>
+public static bool DisallowsSameSiteNone(string userAgent)
+{
+    // Cover all iOS based browsers here. This includes:
+    // - Safari on iOS 12 for iPhone, iPod Touch, iPad
+    // - WkWebview on iOS 12 for iPhone, iPod Touch, iPad
+    // - Chrome on iOS 12 for iPhone, iPod Touch, iPad
+    // All of which are broken by SameSite=None, because they use the iOS 
+    // networking stack.
+    if (userAgent.Contains("CPU iPhone OS 12") ||
+        userAgent.Contains("iPad; CPU OS 12"))
+    {
+        return true;
+    }
+
+    // Cover Mac OS X based browsers that use the Mac OS networking stack. 
+    // This includes:
+    // - Safari on Mac OS X.
+    // This does not include:
+    // - Chrome on Mac OS X
+    // Because they do not use the Mac OS networking stack.
+    if (userAgent.Contains("Macintosh; Intel Mac OS X 10_14") &&
+        userAgent.Contains("Version/") && userAgent.Contains("Safari"))
+    {
+        return true;
+    }
+
+    // Cover Chrome 50-69, because some versions are broken by SameSite=None, 
+    // and none in this range require it.
+    // Note: this covers some pre-Chromium Edge versions, 
+    // but pre-Chromium Edge does not require SameSite=None.
+    if (userAgent.Contains("Chrome/5") || userAgent.Contains("Chrome/6"))
+    {
+        return true;
+    }
+
+    return false;
+}
+</pre>
+<h4>The following curl commands can emulate Chrome 60 and trigger it at SameSite=None</h4>
+<pre>
+$ curl -X POST https://samesitecookie.azurewebsites.net/DemoComp --data "SameSiteValue=None" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36" -s -D headers.txt >/dev/null
+$ cat headers.txt
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Length: 2866
+Content-Type: text/html; charset=utf-8
+Server: Microsoft-IIS/10.0
+Set-Cookie: samesite_DemoComp=value; path=/
+X-AspNetMvc-Version: 5.2
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Set-Cookie: ARRAffinity=xxxxxxxxx;Path=/;HttpOnly;Domain=samesitecookie.azurewebsites.net
+Date: Thu, 30 Jan 2020 13:27:48 GMT
+
+$ curl -X POST https://samesitecookie.azurewebsites.net/DemoComp --data "SameSiteValue=Lax" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36" -s -D headers.txt >/dev/null
+$ cat headers.txt
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Length: 2866
+Content-Type: text/html; charset=utf-8
+Server: Microsoft-IIS/10.0
+Set-Cookie: samesite_DemoComp=value; path=/; SameSite=Lax
+X-AspNetMvc-Version: 5.2
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Set-Cookie: ARRAffinity=xxxxxxxxx;Path=/;HttpOnly;Domain=samesitecookie.azurewebsites.net
+Date: Thu, 30 Jan 2020 13:28:43 GMT
+
+$ curl -X POST https://samesitecookie.azurewebsites.net/DemoComp --data "SameSiteValue=Strict" -A "Mozilla/5.0 (Windows NT 10.0; Win64; x64) AppleWebKit/537.36 (KHTML, like Gecko) Chrome/60.0.3112.113 Safari/537.36" -s -D headers.txt >/dev/null
+$ cat headers.txt
+HTTP/1.1 200 OK
+Cache-Control: private
+Content-Length: 2866
+Content-Type: text/html; charset=utf-8
+Server: Microsoft-IIS/10.0
+Set-Cookie: samesite_DemoComp=value; path=/; SameSite=Strict
+X-AspNetMvc-Version: 5.2
+X-AspNet-Version: 4.0.30319
+X-Powered-By: ASP.NET
+Set-Cookie: ARRAffinity=xxxxxxxxx;Path=/;HttpOnly;Domain=samesitecookie.azurewebsites.net
+Date: Thu, 30 Jan 2020 13:29:01 GMT
+</pre>

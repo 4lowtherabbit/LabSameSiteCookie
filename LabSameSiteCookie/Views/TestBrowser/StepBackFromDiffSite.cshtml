@@ -1,0 +1,18 @@
+﻿
+@{
+    ViewBag.Title = "Test Browser";
+}
+
+<h2>Test Browser</h2>
+
+<h4>You are back on the original site</h4>
+@if (ViewBag.CookieExists ?? true)
+{
+    <h4>Cookie @ViewBag.CookieName exists in the request to this page.</h4>
+}
+else
+{
+    <h4>Cookie @ViewBag.CookieName does not exist in the request to this page.</h4>
+}
+
+<h4>Refresh and observe if the cookie comes out again in the request or not.</h4>

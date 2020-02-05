@@ -1,0 +1,29 @@
+﻿
+@{
+    ViewBag.Title = "Lax and Strict";
+}
+
+<h2>Lax and Strict</h2>
+<h4>Firstly, add a cookie with its SameSite attricute set to either Lax or Strict.</h4>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="SameSiteValue" value="Lax" checked>
+            <label class="form-check-label">Lax</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="SameSiteValue" value="Strict">
+            <label class="form-check-label">Strict</label>
+        </div>
+
+        <input type="submit" value="Add cookie" class="btn btn-default" />
+    </div>
+}
+
+<h4>
+    Please open F12 and observe that a cookie will be added in the server response, after clicking the button:<br />
+<pre>Set-Cookie: samesite_LaxAndStrict=value; path=/; SameSite=Lax</pre>
+</h4>
+<h4>Refer: <a href="https://web.dev/samesite-cookies-explained/">SameSite cookies explained</a></h4>

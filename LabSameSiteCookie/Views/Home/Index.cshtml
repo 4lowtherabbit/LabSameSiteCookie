@@ -1,0 +1,33 @@
+﻿@{
+    ViewBag.Title = "Home Page";
+}
+
+<div class="jumbotron">
+    <h1>SameSite Labs</h1>
+    <p class="lead">A set of labs for understanding and testing the behaviors of different browsers, on the SameSite attribute of HTTP Cookie</p>
+</div>
+
+<div class="row">
+    <div class="col-md-4">
+        <h2>Lax and Strict</h2>
+        <p>
+            This lab demos the difference between SameSite=Lax and SameSite=Strict
+        </p>
+        <p><a class="btn btn-default" href="/LaxAndStrict">Do it &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Demo on Azure App Service compatibility behavior</h2>
+        <p>When an older browser is detected, Azure App Service will automatically remove the SameSite=None cookie property if it is detected in the response headers</p>
+        <p><a class="btn btn-default" href="/DemoComp">Test it&raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Demo Session</h2>
+        <p>ASP.NET session cookie is now with SameSite=Lax by default</p>
+        <p><a class="btn btn-default" href="/DemoSession">Test it &raquo;</a></p>
+    </div>
+    <div class="col-md-4">
+        <h2>Test Browser</h2>
+        <p>Testing how the current browser handles SameSite</p>
+        <p><a class="btn btn-default" href="/TestBrowser">Test it&raquo;</a></p>
+    </div>
+</div>

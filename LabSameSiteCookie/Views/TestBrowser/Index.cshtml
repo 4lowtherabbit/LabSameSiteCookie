@@ -1,0 +1,30 @@
+﻿
+@{
+    ViewBag.Title = "Index";
+}
+
+<h4>Choose a SameSite attributes value and add a cookie.</h4>
+
+@using (Html.BeginForm())
+{
+    <div class="form-group">
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="SameSiteValue" value="Do not set it">
+            <label class="form-check-label">Do not set it</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="SameSiteValue" value="Lax" checked>
+            <label class="form-check-label">Lax</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="SameSiteValue" value="Strict">
+            <label class="form-check-label">Strict</label>
+        </div>
+        <div class="form-check">
+            <input class="form-check-input" type="radio" name="SameSiteValue" value="None">
+            <label class="form-check-label">None</label>
+        </div>
+
+        <input type="submit" value="Add cookie" class="btn btn-default" />
+    </div>
+}
